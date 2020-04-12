@@ -17,11 +17,14 @@ const GlobalStyle = createGlobalStyle`
 `
 const StyledApp = styled.div`
   max-width: 600px;
+  min-height: 100vh;
   margin: 0 auto;
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  box-shadow: 0 4px 4px rgba(44, 62, 80, 1);
+  text-align: center;
+  padding: 20px 0;
+  box-shadow: 0px 3px 10px rgba(56, 56, 56, 0.3);
 `
 const App = () => {
   const [pokemons, setPokemons] = useState([])
@@ -44,9 +47,9 @@ const App = () => {
 
   return (
     <>
-      <GlobalStyle />
-      <Header />
       <Router>
+        <GlobalStyle />
+        <Header />
         <Switch>
           <Route path='/:id' component={Pokemon} />
           <Route path='/' exact render={() => <StyledApp>{error ? <Error /> : pokemons.map((poke) => <Pokemons key={poke.name} name={poke.name} pokeApiKey={poke.url} />)}</StyledApp>} />

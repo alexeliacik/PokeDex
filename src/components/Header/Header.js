@@ -1,12 +1,11 @@
 import React from "react"
-import styled from "styled-components"
+import { useHistory } from "react-router-dom"
 
-const StyledHeader = styled.header`
-  color: #ffc81a;
-  background-color: #ef5450;
-`
+import StyledHeader from "./StyledHeader"
+
 const Header = () => {
-  return <StyledHeader>Header</StyledHeader>
+  let history = useHistory()
+  return <StyledHeader onClick={() => history.push("/")}></StyledHeader>
 }
 
 export default Header

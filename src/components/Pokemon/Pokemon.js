@@ -1,27 +1,17 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
+
+import Error from "../UI/Error/Error"
 import Spinner from "../UI/Spinner/Spinner"
-import styled, { keyframes } from "styled-components"
+import StyledPokemon from "./StyledPokemon"
+
 import axios from "axios"
 
-const smoothReveal = keyframes`
-  from{opacity:0; transform: translateY(10%)}
-  to{opacity:1; transform: translateY(0)}
-`
-
-const StyledPokemon = styled.div`
-  text-align: center;
-
-  .pokemonContent {
-    animation: ${smoothReveal} 0.8s;
-    width: 50%;
-    margin: 0 auto;
-  }
-`
 const Pokemon = () => {
   const { id } = useParams()
   const [pokemon, setPokemon] = useState({})
   const [loading, setLoading] = useState(true)
+  const [error, setError] = useState(false)
 
   useEffect(() => {
     let isSubscribed = true
@@ -37,7 +27,7 @@ const Pokemon = () => {
           setPokemon(response.data)
         }
       })
-      .catch((err) => console.log(err))
+      .catch((err) => setError(true))
 
     return () => {
       isSubscribed = false
@@ -45,25 +35,53 @@ const Pokemon = () => {
     }
   }, [id])
 
-  return (
-    <StyledPokemon>
-      {loading ? (
+  let pokemonContent = null
+  if (loading) {
+    pokemonContent = (
+      <div className='spinner'>
         <Spinner />
-      ) : (
-        <div className='pokemonContent'>
-          <p>{pokemon.name}</p>
-          <div>{pokemon.sprites && <img src={pokemon.sprites.front_default} alt='' />}</div>
-          {pokemon.stats &&
-            pokemon.stats.map((stat) => (
-              <p key={stat.stat.url}>
-                {stat.stat.name} {stat.base_stat}
-              </p>
-            ))}
-          <Link to='/'>Back</Link>
+      </div>
+    )
+  }
+  if (error) {
+    pokemonContent = <Error />
+  }
+
+  if (!error && !loading) {
+    pokemonContent = (
+      <div className='pokemonContent'>
+        <div className='nameImage'>
+          <div className='name'>{pokemon.name}</div>
+          <div className='image'>{pokemon.sprites && <img src={pokemon.sprites.front_default} alt={pokemon.name} />}</div>
         </div>
-      )}
-    </StyledPokemon>
-  )
+        <table>
+          <tbody>
+            {pokemon.stats &&
+              pokemon.stats.map((stat) => {
+                let pokemonName = ""
+                const pokemonNameArray = stat.stat.name.toUpperCase().split("-")
+                if (pokemonNameArray.length === 2) {
+                  pokemonName = `${pokemonNameArray[0]} ${pokemonNameArray[1]}`
+                } else {
+                  pokemonName = pokemonNameArray[0]
+                }
+                return (
+                  <tr key={stat.stat.url}>
+                    <td>{pokemonName}</td>
+                    <td>{stat.base_stat}</td>
+                  </tr>
+                )
+              })}
+          </tbody>
+        </table>
+        <Link className='link' to='/'>
+          Back
+        </Link>
+      </div>
+    )
+  }
+
+  return <StyledPokemon>{pokemonContent}</StyledPokemon>
 }
 
 export default Pokemon
