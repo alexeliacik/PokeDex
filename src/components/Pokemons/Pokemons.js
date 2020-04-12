@@ -8,10 +8,15 @@ import axios from "axios"
 
 const Pokemons = ({ name, pokeApiKey }) => {
   const [pokemon, setPokemon] = useState({})
+  const [loading, setLoading] = useState(true)
   const [error, setError] = useState(false)
 
   useEffect(() => {
     let isSubscribed = true
+    const timer = setTimeout(() => {
+      setLoading(false)
+    }, 700)
+
     axios
       .get(pokeApiKey)
       .then((response) => {
@@ -20,7 +25,11 @@ const Pokemons = ({ name, pokeApiKey }) => {
         }
       })
       .catch((err) => setError(true))
-    return () => (isSubscribed = false)
+
+    return () => {
+      isSubscribed = false
+      clearTimeout(timer)
+    }
   }, [pokeApiKey])
 
   const splittedApiKey = pokeApiKey.split("/")
@@ -28,7 +37,7 @@ const Pokemons = ({ name, pokeApiKey }) => {
 
   let pokemonsContent = (
     <Link to={`/${id}`}>
-      {pokemon.sprites === undefined ? <Spinner /> : <img src={pokemon.sprites.front_default} alt={pokemon.name} />}
+      {pokemon.sprites === undefined || loading ? <Spinner /> : <img src={pokemon.sprites.front_default} alt={pokemon.name} />}
       <h1>{name}</h1>
     </Link>
   )

@@ -32,7 +32,6 @@ const App = () => {
 
   useEffect(() => {
     let isSubscribed = true
-
     axios
       .get("https://pokeapi.co/api/v2/pokemon?limit=151")
       .then((response) => {

@@ -18,7 +18,7 @@ const Pokemon = () => {
 
     const timer = setTimeout(() => {
       setLoading(false)
-    }, 1000)
+    }, 700)
 
     axios
       .get(`https://pokeapi.co/api/v2/pokemon/${id}/`)
