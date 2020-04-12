@@ -42,7 +42,7 @@ const Pokemons = ({ name, pokeApiKey }) => {
     </Link>
   )
   if (error) {
-    pokemonsContent = <h3>Something went wrong!</h3>
+    pokemonsContent = <h3>Something went wrong!!</h3>
   }
 
   return <StyledPokemons>{pokemonsContent}</StyledPokemons>
